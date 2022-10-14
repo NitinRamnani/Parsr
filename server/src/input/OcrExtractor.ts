@@ -72,8 +72,8 @@ export abstract class OcrExtractorFactory extends OcrExtractor {
       });
   }
 
-  public isPdfFile(filePath: string): boolean {
-    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(filePath));
+  public async isPdfFile(filePath: string): Promise<boolean> {
+    const fileType: { ext: string; mime: string } = await filetype.fromBuffer(fs.readFileSync(filePath));
     return fileType !== null && fileType.ext.toLowerCase() === 'pdf';
   }
 

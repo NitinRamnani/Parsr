@@ -39,7 +39,7 @@ import logger from '../src/utils/Logger';
 /**
  * Runs the CLI handler for Parsr
  */
-function main(): void {
+async function main(): Promise<void> {
   commander
     .option('-f, --input-file <filename>', 'Input file to be processed')
     .option(
@@ -78,7 +78,7 @@ function main(): void {
   }
   const documentName: string = commander.documentName;
   const configPath: string = path.resolve(commander.config);
-  let fileType: { ext: string; mime: string } = filetype(fs.readFileSync(filePath));
+  let fileType: { ext: string; mime: string } = await filetype.fromFile(filePath);
   const configStr: string = fs.readFileSync(configPath, 'utf-8');
   const config: Config = new Config(configStr);
 
@@ -195,14 +195,14 @@ function main(): void {
       });
   }
 
-  function copyAssetsToOutputFolder(doc: Document) {
+   function copyAssetsToOutputFolder(doc: Document) {
     if (!doc.assetsFolder) {
       return;
     }
     const destinationFolder = outputFolder + '/assets_' + documentName;
     const filesToCopy: Array<{ from: string; to: string }> = [];
-    fs.readdirSync(doc.assetsFolder).forEach(file => {
-      const imageFileType: { ext: string; mime: string } = filetype(
+    fs.readdirSync(doc.assetsFolder).forEach(async(file) => {
+      const imageFileType: { ext: string; mime: string } = await filetype.fromBuffer(
         fs.readFileSync(doc.assetsFolder + '/' + file),
       );
 

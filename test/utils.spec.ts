@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * Copyright 2019 AXA Group Operations S.A.
  *
@@ -127,4 +128,11 @@ describe('Utils getPageRegex function', () => {
       });
     },
   );
+});
+
+describe('Utils getSubCollections function', () => {
+   it('tests getSubCollections',()=>{
+    const result = utils.getSubCollections([1,2,3,4,5],2)
+    expect(result[0][0]).to.equal(1)
+   })
 });

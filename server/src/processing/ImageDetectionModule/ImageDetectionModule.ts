@@ -58,7 +58,7 @@ export class ImageDetectionModule extends Module<Options> {
       return doc;
     }
 
-    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
+    const fileType: { ext: string; mime: string } = await filetype.fromBuffer(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
       logger.warn(
         `Warning: Input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); \

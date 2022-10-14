@@ -515,7 +515,7 @@ export class ApiServer {
     }
   }
 
-  private handleGetThumb(req: Request, res: Response) {
+  private async handleGetThumb(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     const docId: string = req.params.id;
@@ -532,7 +532,7 @@ export class ApiServer {
       }
     });
 
-    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(binder.input));
+    const fileType: { ext: string; mime: string } = await filetype.fromBuffer(fs.readFileSync(binder.input));
 
     const thumbFolder = path.join(os.tmpdir(), 'Doc-' + docId + '/');
 
@@ -560,7 +560,7 @@ export class ApiServer {
     if (command) {
       const inputFile =
         fileType.ext === 'pdf' ? binder.input.concat(`[${page - 1}]`) : binder.input;
-      convert = new Promise((resolve, reject) => {
+      convert = new Promise<void>((resolve, reject) => {
         exec([command, '-resize', '200x200', inputFile, filePath].join(' '), err => {
           if (err) {
             return reject(err);

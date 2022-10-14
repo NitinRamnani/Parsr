@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import * as filetype from 'file-type';
-import * as fs from 'fs';
 import { BoundingBox, Document, Page, Word } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import * as CommandExecuter from '../../utils/CommandExecuter';
@@ -36,7 +35,7 @@ export class LinkDetectionModule extends Module {
   public async main(doc: Document): Promise<Document> {
     let mdLinks: DumpPdfLinksResponse[] = [];
     const fileType: { ext: string; mime: string } =
-      doc.inputFile && filetype(fs.readFileSync(doc.inputFile));
+      doc.inputFile? await filetype.fromFile(doc.inputFile):null;
     if (!fileType || fileType === null || (fileType && fileType.ext !== 'pdf')) {
       logger.warn(
         `Warning: Input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); \
